@@ -1,18 +1,3 @@
-//This template is where Buisiness Logic will go
-
-// export const hydrate = (plant) => {
-//   return {
-//     ...plant, 
-//     water: (plant.water || 0) + 1
-//   }
-// };
-
-// export const feed = (plant) => {
-//   return {
-//     ...plant, 
-//     soil: (plant.soil || 0) + 1
-//   }
-// };
 export const storeState = () => {
   let currentState = {};
   return (stateChangeFunction = state => state) => {
@@ -33,8 +18,20 @@ export const changeState = (prop) => {
   };
 };
 
-export const feed = changeState("soil")(1);
-export const blueFood = changeState("soil")(5);
+export const changeStates = (prop) => {
+  return (value) => {
+    return (state) => ({
+      ...state,
+      [prop] : (state[prop] || 0) - value * (-1)
+    });
+  };
+};
+
+export const feed = changeState("soil");
+export const blueFood = changeState("soil")(10);
+
+export const starve = changeStates("starve")();
+export const removeFood = changeStates("starve")(-1);
 
 export const hydrate = changeState("water")(1);
 export const superWater = changeState("water")(5);
@@ -49,6 +46,11 @@ if (typeof window !== 'undefined'){
       document.getElementById('soil-value').innerText = `Soil: ${newState.soil}`;
     };
 
+    document.getElementById('starve').onclick = function() {
+      const newState4 = stateControl(removeFood);
+      document.getElementById('soil-value').innerText = `Drain: ${newState4.starve}`;
+    };
+
     document.getElementById('hydrate').onclick = function() {
       const newState2 = stateControl(superWater);
       document.getElementById('water-value').innerText = `Water: ${newState2.water}`;
@@ -58,9 +60,5 @@ if (typeof window !== 'undefined'){
       const newState3 = stateControl(superSun);
       document.getElementById('sunshine-value').innerText = `Sunshine: ${newState3.sunshine}`;
     };
-
-    // document.getElementById('show-state').onclick = function() {
-    //   const currentState = stateControl();
-    //   document.getElementById('soil-value').innerText = `Soil: ${currentState.soil}`;
   };
 }
